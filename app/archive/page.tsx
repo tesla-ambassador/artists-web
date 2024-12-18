@@ -1,10 +1,10 @@
 import React from "react";
-import DashboardContent from "./dashboard/Content";
+import { Archive } from "./Archive";
 
-export default function Home() {
+export default function page() {
   return (
     <div className="min-h-screen px-4 sm:px-[50px] py-8">
-      <DashboardContent />
+      <Archive />
     </div>
   );
 }
