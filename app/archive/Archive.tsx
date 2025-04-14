@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import ArchiveTabContent from "./ArchiveTabContent";
 import { DataTableDemo } from "./Experiments";
+import { VideoArchiveTab } from "./Video_Archive";
 
 export function Archive() {
   return (
@@ -55,7 +56,7 @@ export function Archive() {
           <ArchiveTabContent
             title="Videos"
             desc="An archive of your Videos"
-            children={<DataTableDemo />}
+            children={<VideoArchiveTab />}
           />
         </TabsContent>
       </div>
