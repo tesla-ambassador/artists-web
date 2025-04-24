@@ -1,6 +1,7 @@
 "use client";
 import { formatReleaseDate } from "@/hooks/useful-functions";
 import { Dot } from "lucide-react";
+// https://www.youtube.com/watch?v=-WbRRVfYN2E
 const videoData = [
   {
     id: 1,
@@ -42,7 +43,7 @@ export function VideoArchiveTab() {
       {videoData.map((data) => (
         <div key={data.id}>
           <VideoGrid
-            url={"https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"}
+            url={"https://img.youtube.com/vi/-WbRRVfYN2E/maxresdefault.jpg"}
             alt={data.alt}
             artist={data.artist}
             released={data.releaseDate}

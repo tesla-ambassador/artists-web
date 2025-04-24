@@ -35,48 +35,56 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { numberWithCommas } from "@/hooks/useful-functions";
+import { Form } from "react-hook-form";
 
-const data: Payment[] = [
+const data: Release[] = [
   {
     id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
+    streams: 316000,
+    name: "Certified Lover Boy",
+    dateAdded: "2020-06-10T15:23:11Z",
+    albumArt: "/ziki-top-albums-demo/clb.jpeg",
   },
   {
     id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
+    streams: 242000,
+    name: "K.O.D",
+    dateAdded: "2022-10-10T17:23:11Z",
+    albumArt: "/album-art-demo/kod.jpeg",
   },
   {
     id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
+    streams: 837000,
+    name: "MTBMB",
+    dateAdded: "2024-08-09T14:23:11Z",
+    albumArt: "/ziki-top-albums-demo/mtbmb.jpeg",
   },
   {
     id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
+    streams: 874000,
+    name: "Might Delete Later",
+    dateAdded: "2025-03-19T14:24:11Z",
+    albumArt: "/album-art-demo/might-delete-later.jpeg",
   },
   {
     id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
+    streams: 721000,
+    name: "Graduation",
+    dateAdded: "2023-12-19T16:03:11Z",
+    albumArt: "/ziki-top-albums-demo/graduation.jpeg",
   },
 ];
 
-export type Payment = {
+export type Release = {
   id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+  streams: number;
+  name: string;
+  dateAdded: string;
+  albumArt: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Release>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -100,40 +108,55 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "name",
+    header: "Name",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <>
+        <div className="flex gap-3 items-center">
+          <div className="w-[50px] h-[50px] rounded-md overflow-hidden">
+            <img
+              src={row.original.albumArt}
+              alt="Cover art"
+              className="object-cover object-center"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-md">{row.getValue("name")}</span>
+          </div>
+        </div>
+      </>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "dateAdded",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Date Added
           <ArrowUpDown />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("dateAdded"));
+      const formattedDate = date.toLocaleDateString("en-GB", {
+        dateStyle: "medium",
+      });
+      return <div className="capitalize">{formattedDate}</div>;
+    },
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "streams",
+    header: () => <div className="text-right">Streams</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+      return (
+        <div className="text-right font-medium">
+          {numberWithCommas(row.getValue("streams"))}
+        </div>
+      );
     },
   },
   {
@@ -168,9 +191,14 @@ export const columns: ColumnDef<Payment>[] = [
 ];
 
 export function DataTableDemo() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: "dateAdded",
+      desc: true,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -199,10 +227,10 @@ export function DataTableDemo() {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Search..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -245,7 +273,7 @@ export function DataTableDemo() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -264,7 +292,7 @@ export function DataTableDemo() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
