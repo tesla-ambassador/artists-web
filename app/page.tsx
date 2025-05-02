@@ -1,10 +1,6 @@
 import React from "react";
-import DashboardContent from "./dashboard/Content";
+import { Landing } from "@/components/landing/landing";
 
 export default function Home() {
-  return (
-    <div className="min-h-screen px-4 sm:px-[50px] py-8">
-      <DashboardContent />
-    </div>
-  );
+  return <Landing />;
 }

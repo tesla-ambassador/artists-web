@@ -5,6 +5,7 @@ import { PlusCircle } from "lucide-react";
 import ArchiveTabContent from "./ArchiveTabContent";
 import { DataTableDemo } from "./Experiments";
 import { VideoArchiveTab } from "./Video_Archive";
+import { UploadForm } from "@/components/forms/upload-form";
 import {
   Dialog,
   DialogContent,
@@ -91,57 +92,14 @@ export function UploadButton() {
           <PlusCircle /> Upload
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Upload Content</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="sr-only">Upload Content</DialogTitle>
+          <DialogDescription className="sr-only">
             Upload your content here. Click submit when you're done.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue=""
-              placeholder="e.g Nokia"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Categories
-            </Label>
-            <Select>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="apple">Songs</SelectItem>
-                  <SelectItem value="banana">Releases</SelectItem>
-                  <SelectItem value="blueberry">Videos</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Features
-            </Label>
-            <Input
-              id="username"
-              defaultValue=""
-              placeholder="ft. TyDollar $ign"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Submit</Button>
-        </DialogFooter>
+        <UploadForm />
       </DialogContent>
     </Dialog>
   );

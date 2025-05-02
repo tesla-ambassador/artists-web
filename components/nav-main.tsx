@@ -31,16 +31,16 @@ export function NavMain({
             key={item.title}
             className={
               currentRoute === item.url
-                ? "bg-gradient-to-r from-blue-500 to-cyan-500 rounded-md text-white"
-                : "bg-none"
+                ? "bg-gradient-to-r from-blue-500 to-cyan-500 rounded-md text-white w-full"
+                : "bg-none w-full"
             }
           >
             <SidebarMenuButton
               tooltip={item.title}
               className={
                 currentRoute === item.url
-                  ? "hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-500 hover:rounded-md hover:text-white"
-                  : "bg-none"
+                  ? "hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-500 hover:rounded-md hover:text-white w-full"
+                  : "bg-none w-full"
               }
             >
               {item.icon && <item.icon />}
