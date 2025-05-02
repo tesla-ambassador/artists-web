@@ -26,18 +26,12 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <main className="flex h-screen">
-          <div className="w-full max-w-[400px] hidden lg:block h-full">
-            <AuthSidebar />
-          </div>
-          <div className="w-full h-full">{children}</div>
-          <Toaster />
-        </main>
-      </body>
-    </html>
+    <main className="flex h-screen">
+      <div className="w-full max-w-[400px] hidden lg:block h-full">
+        <AuthSidebar />
+      </div>
+      <div className="w-full h-full">{children}</div>
+      <Toaster />
+    </main>
   );
 }

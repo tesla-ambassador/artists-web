@@ -19,13 +19,17 @@ export function AuthSidebar() {
     <div className="relative h-full w-full flex flex-col justify-between p-4 pb-20 bg-[url('/landing-bg/drums-potrait.jpg')] bg-no-repeat bg-center bg-cover">
       <div className="relative z-20">
         <div className="w-[70px]">
-          <img src="/ziki-logo.svg" alt="logo" />
+          <Link href={"/"}>
+            <img src="/ziki-logo.svg" alt="logo" />
+          </Link>
         </div>
         <div className="mt-16 text-white space-y-3">
-          <h1 className="text-xl">Sign up and come on in</h1>
-          <p className="text-gray-200">
-            Sign up is simple, free and fast. One place to manage everything and
-            everyone.
+          <h1 className="text-2xl">Why join Ziki Tunez?</h1>
+          <p className="text-gray-100">
+            Join a platform that gives artists the power to share their music
+            with the world, grow loyal audiences, and earn from their craft. Be
+            part of a movement that unlocks creative potential and transforms
+            passion into sustainable success.
           </p>
         </div>
       </div>
@@ -41,7 +45,7 @@ export function AuthSidebar() {
         </div>
       </div>
       {/* Overlay */}
-      <div className="absolute inset-0 z-10 h-full w-full bg-black/65 dark:bg-black/50" />
+      <div className="absolute inset-0 z-10 h-full w-full bg-blue-400/65" />
     </div>
   );
 }

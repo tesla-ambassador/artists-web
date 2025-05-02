@@ -42,13 +42,17 @@ export function LoginForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 w-full max-w-[500px]"
       >
-        <div className="flex flex-col gap-4 items-center text-center lg:hidden">
-          <div className="w-[70px]">
-            <img src="/ziki-logo.svg" alt="logo" />
+        <div className="flex flex-col gap-4 items-center text-center">
+          <div className="w-[70px] lg:hidden">
+            <Link href={"/"}>
+              <img src="/ziki-logo.svg" alt="logo" />
+            </Link>
           </div>
-          <div className="w-full max-w-[400px]">
-            <h1 className="font-semibold text-xl sm:text-2xl">Welcome Back</h1>
-            <p>
+          <div className="w-full max-w-[400px] space-y-2">
+            <h1 className="font-semibold text-xl sm:text-2xl md:text-4xl lg:text-5xl">
+              Welcome Back
+            </h1>
+            <p className="text-gray-500">
               Log in is simple, free and fast. One place to manage everything
               and everyone.
             </p>

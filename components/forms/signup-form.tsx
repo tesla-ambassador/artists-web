@@ -4,6 +4,7 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -57,7 +58,9 @@ export function SignupForm() {
       >
         <div className="flex flex-col gap-4 items-center text-center lg:hidden">
           <div className="w-[70px]">
-            <img src="/ziki-logo.svg" alt="logo" />
+            <Link href={"/"}>
+              <img src="/ziki-logo.svg" alt="logo" />
+            </Link>
           </div>
           <div className="w-full max-w-[400px]">
             <h1 className="font-semibold text-xl sm:text-2xl">Sign Up</h1>

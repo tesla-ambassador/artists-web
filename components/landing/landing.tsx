@@ -1,53 +1,21 @@
 "use client";
 import { ThreeDMarquee } from "@/components/ui/3d-marquee";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function Landing() {
-  const images = [
-    "https://assets.aceternity.com/cloudinary_bkp/3d-card.png",
-    "https://assets.aceternity.com/animated-modal.png",
-    "https://assets.aceternity.com/animated-testimonials.webp",
-    "https://assets.aceternity.com/cloudinary_bkp/Tooltip_luwy44.png",
-    "https://assets.aceternity.com/github-globe.png",
-    "https://assets.aceternity.com/glare-card.png",
-    "https://assets.aceternity.com/layout-grid.png",
-    "https://assets.aceternity.com/flip-text.png",
-    "https://assets.aceternity.com/hero-highlight.png",
-    "https://assets.aceternity.com/carousel.webp",
-    "https://assets.aceternity.com/placeholders-and-vanish-input.png",
-    "https://assets.aceternity.com/shooting-stars-and-stars-background.png",
-    "https://assets.aceternity.com/signup-form.png",
-    "https://assets.aceternity.com/cloudinary_bkp/stars_sxle3d.png",
-    "https://assets.aceternity.com/spotlight-new.webp",
-    "https://assets.aceternity.com/cloudinary_bkp/Spotlight_ar5jpr.png",
-    "https://assets.aceternity.com/cloudinary_bkp/Parallax_Scroll_pzlatw_anfkh7.png",
-    "https://assets.aceternity.com/tabs.png",
-    "https://assets.aceternity.com/cloudinary_bkp/Tracing_Beam_npujte.png",
-    "https://assets.aceternity.com/cloudinary_bkp/typewriter-effect.png",
-    "https://assets.aceternity.com/glowing-effect.webp",
-    "https://assets.aceternity.com/hover-border-gradient.png",
-    "https://assets.aceternity.com/cloudinary_bkp/Infinite_Moving_Cards_evhzur.png",
-    "https://assets.aceternity.com/cloudinary_bkp/Lamp_hlq3ln.png",
-    "https://assets.aceternity.com/macbook-scroll.png",
-    "https://assets.aceternity.com/cloudinary_bkp/Meteors_fye3ys.png",
-    "https://assets.aceternity.com/cloudinary_bkp/Moving_Border_yn78lv.png",
-    "https://assets.aceternity.com/multi-step-loader.png",
-    "https://assets.aceternity.com/vortex.png",
-    "https://assets.aceternity.com/wobble-card.png",
-    "https://assets.aceternity.com/world-map.webp",
-  ];
   return (
     <div className="relative mx-auto min-h-screen h-full min-w-screen w-full overflow-hidden flex flex-col items-center gap-80">
       <div className="relative z-20 w-full mx-auto flex items-center justify-between p-4 sm:px-[50px] lg:px-[100px]">
-        <div className="w-[70px]">
+        <div className="w-[50px] sm:w-[70px]">
           <img src="/ziki-logo.svg" alt="Ziki Tunes Logo" />
         </div>
-        <div className="flex items-center gap-4">
-          <Button className="px-7 bg-gradient-to-r from-blue-500 to-cyan-500">
-            Login
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Button className="sm:px-7 bg-gradient-to-r from-blue-500 to-cyan-500">
+            <Link href={"/authpages/login"}>Login</Link>
           </Button>
-          <Button variant={"link"} className="text-white text-lg">
-            Signup
+          <Button variant={"link"} className="text-white sm:text-lg">
+            <Link href={"/authpages/signup"}>Signup</Link>
           </Button>
         </div>
       </div>
@@ -77,13 +45,7 @@ export function Landing() {
 
       {/* overlay */}
       <div className="absolute inset-0 z-10 h-full w-full bg-black/50 dark:bg-black/40" />
-      <div className="pointer-events-none absolute inset-0 h-full w-full">
-        <img
-          src="/landing-bg/artist-bg-3.jpg"
-          alt="Landing Background"
-          className="object-cover object-center"
-        />
-      </div>
+      <div className="pointer-events-none absolute inset-0 h-full w-full bg-[url('/landing-bg/artist-bg-3.jpg')] bg-no-repeat bg-cover bg-center" />
     </div>
   );
 }
