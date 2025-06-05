@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import ArchiveTabContent from "./ArchiveTabContent";
 import { DataTableDemo } from "./Experiments";
 import { VideoArchiveTab } from "./Video_Archive";
 import { UploadForm } from "@/components/forms/upload-form";
+import { MusicReleaseForm } from "@/components/forms/music-release-form";
 import {
   Dialog,
   DialogContent,
@@ -45,12 +47,12 @@ export function Archive() {
           >
             Releases
           </TabsTrigger>
-          <TabsTrigger
+          {/* <TabsTrigger
             value="Videos"
             className="data-[state=active]:bg-gradient-to-r from-blue-500 to-cyan-500 data-[state=active]:text-white"
           >
             Videos
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <div>
@@ -92,14 +94,19 @@ export function UploadButton() {
           <PlusCircle /> Upload
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
+      <DialogContent
+        onInteractOutside={(event) => {
+          event.preventDefault();
+        }}
+        className="sm:max-w-[425px] md:max-w-[600px]"
+      >
         <DialogHeader>
           <DialogTitle className="sr-only">Upload Content</DialogTitle>
           <DialogDescription className="sr-only">
             Upload your content here. Click submit when you're done.
           </DialogDescription>
         </DialogHeader>
-        <UploadForm />
+        <MusicReleaseForm />
       </DialogContent>
     </Dialog>
   );

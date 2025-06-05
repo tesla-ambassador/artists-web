@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Release {
+  id                 String   @id @default(cuid())
+  title              String
+  language           String
+  genre              String
+  secondaryGenre     String?
+  description        String   @db.Text
+  features           String?
+  releaseType        String
+  version            String?
+  label              String?
+  referenceNo        String?
+  upc                String?
+  releaseDate        DateTime
+  digitalReleaseDate DateTime
+  licenseType        String
+  publishingRegions  String
+  budget             String
+  artworkUrl         String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  songs                 Song[]
+  artistRoles           ArtistRole[]
+  legalOwners           LegalOwner[]
+  distributionPlatforms DistributionPlatform[]
+
+  @@map("releases")
+}
+
+model Song {
+  id        String   @id @default(cuid())
+  title     String
+  fileUrl   String
+  duration  Int? // in seconds
+  fileSize  Int? // in bytes
+  mimeType  String?
+  releaseId String
+  release   Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("songs")
+}
+
+model ArtistRole {
+  id             String  @id @default(cuid())
+  artistRole     String
+  artistRoleName String
+  releaseId      String
+  release        Release @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+
+  @@map("artist_roles")
+}
+
+model LegalOwner {
+  id        String  @id @default(cuid())
+  type      String // 'owner' or 'release'
+  name      String
+  year      String
+  releaseId String
+  release   Release @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+
+  @@map("legal_owners")
+}
+
+model DistributionPlatform {
+  id        String  @id @default(cuid())
+  platform  String
+  releaseId String
+  release   Release @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+
+  @@map("distribution_platforms")
+}

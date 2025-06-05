@@ -24,62 +24,96 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
 } from "@/components/ui/chart";
 import { compactNumbers } from "@/hooks/useful-functions";
 
 // This is where you will find all the chart data... I think it's organized enough for you to find.
 const chartData = [
-  { month: "January", albumSales: 186, merchandise: 80 },
-  { month: "February", albumSales: 305, merchandise: 200 },
-  { month: "March", albumSales: 237, merchandise: 120 },
-  { month: "April", albumSales: 73, merchandise: 190 },
-  { month: "May", albumSales: 209, merchandise: 130 },
-  { month: "June", albumSales: 214, merchandise: 140 },
+  {
+    month: "January",
+    zikiRevenue: 186,
+    globalRevenue: 80,
+    callerBackRingtones: 180,
+  },
+  {
+    month: "February",
+    zikiRevenue: 305,
+    globalRevenue: 200,
+    callerBackRingtones: 160,
+  },
+  {
+    month: "March",
+    zikiRevenue: 237,
+    globalRevenue: 120,
+    callerBackRingtones: 168,
+  },
+  {
+    month: "April",
+    zikiRevenue: 73,
+    globalRevenue: 190,
+    callerBackRingtones: 200,
+  },
+  {
+    month: "May",
+    zikiRevenue: 209,
+    globalRevenue: 130,
+    callerBackRingtones: 130,
+  },
+  {
+    month: "June",
+    zikiRevenue: 214,
+    globalRevenue: 140,
+    callerBackRingtones: 200,
+  },
 ];
 
 const pieChartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
+  { browser: "Ziki Revenue", visitors: 275, fill: "var(--color-zikiRevenue)" },
+  {
+    browser: "Global Revenue",
+    visitors: 200,
+    fill: "var(--color-globalRevenue)",
+  },
+  // { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
+  // { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+  {
+    browser: "Caller Back Ringtones",
+    visitors: 190,
+    fill: "var(--color-callerBackRingtones)",
+  },
 ];
 
 // These are the chart configurations, you can call them schema for all I care.
 const chartConfig = {
-  albumSales: {
-    label: "Album Sales",
+  zikiRevenue: {
+    label: "Ziki Revenue",
     color: "hsl(var(--chart-1))",
   },
-  merchandise: {
-    label: "Merchandise",
+  globalRevenue: {
+    label: "Global Revenue",
     color: "hsl(var(--chart-2))",
+  },
+
+  callerBackRingtones: {
+    label: "Caller Back Ringtones",
+    color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
 
 const pieChartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
+  zikiRevenue: {
+    label: "Ziki Revenue",
     color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
+  globalRevenue: {
+    label: "Global Reveneu",
     color: "hsl(var(--chart-2))",
   },
-  firefox: {
-    label: "Firefox",
+  callerBackRingtones: {
+    label: "Caller Back Ringtones",
     color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
   },
 } satisfies ChartConfig;
 
@@ -89,7 +123,7 @@ export function SalesChart() {
   return (
     <Card className="h-full w-full">
       <CardHeader>
-        <CardTitle className="text-blue-600">Sales</CardTitle>
+        <CardTitle className="text-blue-600">Revenue By Month</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent>
@@ -112,19 +146,27 @@ export function SalesChart() {
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
-              dataKey="albumSales"
+              dataKey="zikiRevenue"
               type="monotone"
-              stroke="var(--color-albumSales)"
+              stroke="var(--color-zikiRevenue)"
               strokeWidth={2}
               dot={false}
             />
             <Line
-              dataKey="merchandise"
+              dataKey="globalRevenue"
               type="monotone"
-              stroke="var(--color-merchandise)"
+              stroke="var(--color-globalRevenue)"
               strokeWidth={2}
               dot={false}
             />
+            <Line
+              dataKey="callerBackRingtones"
+              type="monotone"
+              stroke="var(--color-callerBackRingtones)"
+              strokeWidth={2}
+              dot={false}
+            />
+            <ChartLegend content={<ChartLegendContent />} />
           </LineChart>
         </ChartContainer>
       </CardContent>
@@ -132,10 +174,7 @@ export function SalesChart() {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
+              Revenue generated by streams <TrendingUp className="h-4 w-4" />
             </div>
           </div>
         </div>
@@ -194,7 +233,7 @@ export function RevenueDistributionChart() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          Revenue Streams
                         </tspan>
                       </text>
                     );
@@ -202,15 +241,16 @@ export function RevenueDistributionChart() {
                 }}
               />
             </Pie>
+            {/* <ChartLegend
+              content={<ChartLegendContent nameKey="zikiRevenue" />}
+              className="-transalte-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+            /> */}
           </PieChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing total revenue distribution for the last 6 months
         </div>
       </CardFooter>
     </Card>

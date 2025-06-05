@@ -1,0 +1,3 @@
+[submodule "db-schemas"]
+	path = db-schemas
+	url = https://gitlab.com/WorkHubSourcingLTD/db-schemas.git

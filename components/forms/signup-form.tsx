@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
+import useAuth from "@/hooks/useAuth";
+import { redirect, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,18 +20,37 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "../ui/checkbox";
+import {
+  Select,
+  SelectItem,
+  SelectTrigger,
+  SelectGroup,
+  SelectValue,
+  SelectContent,
+} from "../ui/select";
 
-const formSchema = z.object({
-  fullName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  stageName: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  password: z.string(),
-  confirmPassword: z.string(),
-  agreeToTerms: z.boolean(),
-});
+import {
+  countryPhoneCodes,
+  extractPhoneCode,
+} from "@/utils/country/country-code-data";
+
+const formSchema = z
+  .object({
+    fullName: z.string().min(2, {
+      message: "Username must be at least 2 characters.",
+    }),
+    stageName: z.string(),
+    email: z.string().email(),
+    phone: z.string().nonempty({ message: "Please provide a phone number" }),
+    password: z.string().nonempty({ message: "Provide a password" }),
+    confirmPassword: z.string(),
+    country: z.string().nonempty({ message: "Please select a country" }),
+    agreeToTerms: z.boolean(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export function SignupForm() {
   const form = useForm({
@@ -41,16 +62,57 @@ export function SignupForm() {
       phone: "",
       password: "",
       confirmPassword: "",
+      country: "",
       agreeToTerms: false,
     },
   });
   const watchTerms = form.watch("agreeToTerms");
+  const { isLoading, error, signUp } = useAuth();
+  const router = useRouter();
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const {
+      fullName,
+      stageName,
+      email,
+      phone,
+      password,
+      confirmPassword,
+      country,
+      agreeToTerms,
+    } = values;
+    const userPhone = `${extractPhoneCode(country)}${phone}`;
+    const formData = {
+      username: fullName,
+      phone: userPhone,
+      email: email,
+      password: password,
+      name: stageName,
+      country_code: {
+        label: country,
+        value: country,
+      },
+      tnc: agreeToTerms,
+    };
+    try {
+      const response = await signUp(formData);
+
+      if (response) {
+        router.push(
+          `/authpages/verify?username=${fullName}?phone=${userPhone}?email=${email}?password=${password}`,
+        );
+      }
+    } catch (err: any) {
+      console.log(err);
+    }
     console.log(values);
   };
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-screen flex justify-center items-center">
+      The page is Loading
+    </div>
+  ) : (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -113,19 +175,49 @@ export function SignupForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g +256123456789" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-3 items-center w-full">
+          <FormField
+            name="country"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Country</FormLabel>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Your Country" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent side="bottom" sticky="always">
+                    <SelectGroup>
+                      {countryPhoneCodes.map((item) => (
+                        <SelectItem
+                          key={`${item.code}-${item.country}`}
+                          value={`${item.code}-${item.country}`}
+                        >
+                          {item.country}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g 0712345678" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="flex justify-between gap-4 w-full">
           <FormField
             control={form.control}
@@ -162,6 +254,7 @@ export function SignupForm() {
             )}
           />
         </div>
+        {error && <span className="text-red-500 text-sm">{error}</span>}
         <FormField
           control={form.control}
           name="agreeToTerms"

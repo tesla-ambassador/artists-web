@@ -161,7 +161,12 @@ export function UserSettings() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={handleSaveProfile}>Save Changes</Button>
+              <Button
+                className="bg-blue-500 hover:bg-sky-500"
+                onClick={handleSaveProfile}
+              >
+                Save Changes
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -188,7 +193,12 @@ export function UserSettings() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button onClick={handleSavePassword}>Update Password</Button>
+                <Button
+                  className="bg-blue-500 hover:bg-sky-500 text-white hover:text-white"
+                  onClick={handleSavePassword}
+                >
+                  Update Password
+                </Button>
               </CardFooter>
             </Card>
 
@@ -309,7 +319,9 @@ export function UserSettings() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button>Save Preferences</Button>
+              <Button className="bg-blue-500 hover:bg-sky-500 text-white hover:text-white">
+                Save Preferences
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>

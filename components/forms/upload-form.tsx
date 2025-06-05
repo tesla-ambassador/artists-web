@@ -243,13 +243,16 @@ export function UploadForm() {
         </CardContent>
         <CardFooter>
           {category === "Video" ? (
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full bg-blue-500 hover:bg-sky-500"
+            >
               {"Upload Link"}
             </Button>
           ) : (
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-blue-500 hover:bg-sky-500"
               disabled={isUploading || !file}
             >
               {isUploading ? "Uploading..." : "Upload Content"}

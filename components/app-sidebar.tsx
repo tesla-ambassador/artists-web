@@ -31,8 +31,8 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Drake",
+    email: "drake@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
@@ -42,14 +42,9 @@ const data = {
       plan: "Artist App",
     },
     {
-      name: "Acme Corp.",
+      name: "Ziki Music App.",
       logo: AudioWaveform,
       plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
     },
   ],
   navMain: [

@@ -1,0 +1,486 @@
+# Artist input schema
+input ArtistInput {
+  id: ID!
+  name: String!
+  ownership: Int!
+}
+
+enum Role {
+  PRIMARY_ARTIST
+  PERFORMER
+  PRODUCER
+  REMIXER
+  COMPOSER
+  LYRICIST
+  PUBLISHER
+  FEATURING_WITH
+  CONDUCTOR
+  ARRANGER
+  ORCHESTRA
+  ACTOR
+  AGENT
+  PROMOTER
+  BENEFICIARY
+}
+
+input CollaboratorInput {
+  name: String!
+  role: Role!
+  ownership: Int!
+}
+
+type CollaboratorOutput {
+  name: String
+  role: String
+  ownership: Int
+}
+
+enum ExplicitLyrics {
+  NOT_EXPLICIT
+  EXPLICIT
+  CLEANED
+}
+
+enum ReleaseType {
+  SINGLE
+  ALBUM
+  EP
+}
+
+enum LicenceType {
+  COPYRIGHT
+  CREATIVE_COMMONS
+}
+
+enum PriceCategory {
+  BUDGET
+  MID
+  FULL
+  PREMIUM
+}
+
+input ArtworkCopyrightInput {
+  name: String
+  year: Int
+}
+
+type ArtworkCopyrightOutput {
+  name: String
+  year: Int
+}
+
+input ReleaseOwnerInput {
+  name: String
+  year: Int
+}
+
+type ReleaseOwnerOutput {
+  name: String
+  year: Int
+}
+
+input SongInput {
+  audio_path: String!
+  title: String!
+  sub_title: String
+  duration: Int!
+  lyrics: String
+  explicit_lyrics: ExplicitLyrics
+  albums: [AlbumInput]
+  digital_release_date: String!
+  original_release_date: String
+  licence_type: LicenceType!
+  copyright_of_artwork: ArtworkCopyrightInput!
+  legal_owner_of_release: ReleaseOwnerInput!
+  price_category: PriceCategory!
+  territories: [String!]
+  publishing_id: String
+  publisher: String
+  album_art: String!
+  total_albums: Int!
+  management_group: String
+  label: String
+  genre: String!
+  secondary_genre: String
+  remix_or_version: String
+  available_separately: Boolean
+  start_point_time: Int
+  language_of_the_lyrics: String!
+  owner_of_the_phonogram: String!
+  isrc_code: String
+  iswc_code: String
+  release_type: ReleaseType
+  qc_status: String!
+  collaborators: [CollaboratorInput!]!
+  unavailable_countries: [String!]
+  notes: String
+}
+
+input getSongsByArtistInput {
+  artistId: String!
+  nextToken: String
+  # default pageSize = 10
+  pageSize: Int
+}
+
+type AlbumOutput {
+  name: String!
+  id: ID!
+  album_art: String!
+  release_date: String!
+}
+
+type ArtistOutput {
+  id: ID!
+  name: String!
+}
+
+type SongOutput {
+  id: ID
+  audio_path: String!
+  title: String!
+  sub_title: String
+  duration: Int!
+  lyrics: String
+  explicit_lyrics: ExplicitLyrics
+  albums: [AlbumOutput]
+  digital_release_date: String!
+  original_release_date: String
+  licence_type: LicenceType!
+  copyright_of_artwork: ArtworkCopyrightOutput!
+  legal_owner_of_release: ReleaseOwnerOutput!
+  price_category: PriceCategory!
+  territories: [String!]
+  publishing_id: String
+  publisher: String
+  album_art: String!
+  total_albums: Int!
+  management_group: String
+  label: String
+  genre: String!
+  secondary_genre: String
+  remix_or_version: String
+  available_separately: Boolean
+  start_point_time: Int
+  language_of_the_lyrics: String!
+  owner_of_the_phonogram: String!
+  isrc_code: String
+  iswc_code: String
+  release_type: ReleaseType
+  qc_status: String!
+  collaborators: [CollaboratorOutput!]!
+  unavailable_countries: [String!]
+}
+
+input SongUpdateInput {
+  id: ID!
+  audio_path: String
+  title: String
+  sub_title: String
+  duration: Int
+  total_albums: Int
+  lyrics: String
+  release_date: String
+  publishing_id: String
+  publisher: String
+  album_art: String
+  management_group: String
+  label: String
+  genre: String
+  artiste: [ArtistInput!]
+  collaborators: [CollaboratorInput]
+}
+
+# basic info of song which will be stored in album
+type BasicSongOutput {
+  id: ID
+  duration: Int
+  album_art: String
+  audio_path: String
+  title: String
+  artists: [ArtistOutput]
+}
+
+input BasicSongInput {
+  id: ID!
+  title: String!
+  duration: Int!
+  album_art: String!
+  audio_path: String!
+  artists: [ArtistInput!]!
+}
+
+type OwnershipOutput {
+  name: String!
+  share: Int!
+}
+
+# Artist user schema
+
+input UserInput {
+  name: String
+  locale: String
+  nickname: String
+  bio: String
+  email: String
+  preferred_username: String
+  based_country: String
+  based_region: String
+  address: String
+  website: String
+  updated_at: String
+  picture: String
+  followers: String
+  monthly_plays: String
+  downloads: String
+  is_artist: Boolean
+  country: String
+  email_alerts: String
+  instagram: String
+  twitter: String
+  youtube: String
+  facebook: String
+  role: [Role]
+  influencers: [String]
+  genre: [String]
+}
+
+type UserOutput {
+  sub: String
+  name: String
+  locale: String
+  nickname: String
+  bio: String
+  email: String
+  preferred_username: String
+  based_region: String
+  based_country: String
+  address: String
+  website: String
+  updated_at: String
+  picture: String
+  followers: String
+  monthly_plays: String
+  downloads: String
+  is_artist: Boolean
+  country: String
+  email_alerts: String
+  instagram: String
+  twitter: String
+  youtube: String
+  facebook: String
+  role: [Role]
+  influencers: [String]
+  genre: [String]
+}
+
+input PaginatedArtistInput {
+  artistId: String!
+  nextToken: String
+  # default pageSize = 10
+  pageSize: Int
+}
+
+type PaginatedSongsOutput {
+  nextToken: String
+  songs: [SongOutput]
+}
+
+# Schemas for Album
+input AlbumInput {
+  album_art: String!
+  release_date: String!
+  title: String!
+  total_songs: Int!
+}
+
+input AlbumUpdateInput {
+  id: ID!
+  album_art: String
+  release_date: String
+  total_songs: Int
+  title: String
+}
+
+# Schemas for Album & Song
+input SongAlbumInput {
+  id: ID!
+  title: String!
+}
+
+type SongAlbumOuput {
+  id: ID!
+  title: String!
+}
+
+# Schemas for image upload
+type ImgUploadResult {
+  id: ID
+  uploadURL: String
+}
+type ImageUploadUrlOutput {
+  result: ImgUploadResult
+  result_info: String
+  success: Boolean
+  errors: String
+  messages: String
+}
+
+# Schemas for search
+enum SearchField {
+  ARTIST
+  SONG
+  ALBUM
+}
+
+input LatexSearchInput {
+  entity: SearchField!
+  # Providing username will limit the results to that user
+  username: String
+  # On empty query, result will output all items of entity
+  query: String
+  # Default page size is 10
+  size: Int
+  # Offset the search result (pagination)
+  page: Int
+}
+
+input SimpleSearchInput {
+  query: String
+  # Default page size is 10
+  size: Int
+  # Offset the search result (pagination)
+  page: Int
+}
+
+type SongSearchField {
+  id: ID
+  entity_type: SearchField
+  artists: [String]
+  title: String
+  subtitle: String
+  lyrics: String
+  genre: String
+  publisher: String
+  album_art: String
+  audio_path: String
+  stream_count: Int
+  duration: Int
+  # date format - yyyy-mm-ddT00:00:00Z
+  release_date: String
+}
+
+type AlbumSearchField {
+  id: ID
+  entity_type: SearchField
+  name: String
+  release_date: String
+  album_art: String
+}
+
+type ArtistSearchField {
+  id: ID
+  entity_type: SearchField
+  name: String
+  bio: String
+  role: [String]
+  picture: String
+}
+
+union SearchResultFields =
+    SongSearchField
+  | AlbumSearchField
+  | ArtistSearchField
+
+type SearchHit {
+  id: ID
+  fields: SearchResultFields
+}
+
+type SearchResult {
+  found: Int
+  start: Int
+  hit: [SearchHit]
+}
+
+type AllSearchHit {
+  artist: [ArtistSearchField]
+  album: [AlbumSearchField]
+  song: [SongSearchField]
+}
+
+type AllSearchResult {
+  found: Int
+  start: Int
+  hit: AllSearchHit
+}
+
+# Paginated schemas
+type PaginatedAlbumsOutput {
+  albums: [AlbumOutput]
+  nextToken: String
+}
+
+type PaginatedListArtistsOutput {
+  artists: [UserOutput]
+  nextToken: String
+}
+
+type PaginatedBasicSongOutput {
+  songs: [BasicSongOutput]
+  nextToken: String
+}
+
+type PaginatedAlbumOutput {
+  albums: [AlbumOutput]
+  nextToken: String
+}
+
+type TransactWriteOutput {
+  message: String
+  id: ID
+}
+
+type GetCountriesOutput {
+  countries: [String]
+}
+
+type Mutation {
+  putSong(input: SongInput!): TransactWriteOutput
+  updateSong(input: SongUpdateInput!): TransactWriteOutput
+  putAlbum(input: AlbumInput): AlbumOutput
+  updateAlbum(input: AlbumUpdateInput!): TransactWriteOutput
+  deleteAlbum(id: ID!): AlbumOutput
+  deleteSong(id: ID!): SongOutput
+  # add/remove songs in album
+  addSongInAlbum(songId: ID!, albumId: ID!): TransactWriteOutput
+  deleteSongFromAlbum(songId: ID!, albumId: ID!): TransactWriteOutput
+  # Update user
+  updateUser(input: UserInput): UserOutput
+  createImgUploadUrl: ImageUploadUrlOutput
+}
+
+type Query {
+  searchItem(input: LatexSearchInput): SearchResult
+  searchAll(input: SimpleSearchInput): AllSearchResult
+  getSongById(songId: String!): SongOutput
+  getAllSongs(nextToken: String, pageSize: Int): SongOutput
+  getSongsByArtist(input: PaginatedArtistInput!): PaginatedSongsOutput
+  # album_song queries
+  getSongsOfAlbum(albumId: ID!, pageSize: Int): PaginatedBasicSongOutput
+  getAlbumsOfSong(songId: ID!, pageSize: Int): PaginatedAlbumOutput
+  # album queries
+  getAlbumById(albumId: String!): AlbumOutput
+  getAlbumsByArtist(input: PaginatedArtistInput): PaginatedAlbumsOutput
+  # User queries
+  getUser: UserOutput
+  getUserById(userId: ID!): UserOutput
+  listArtists(nextToken: String, pageSize: Int): PaginatedListArtistsOutput
+  # constants
+  getCountries(region: String!): GetCountriesOutput
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

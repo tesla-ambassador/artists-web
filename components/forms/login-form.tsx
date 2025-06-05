@@ -17,9 +17,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { redirect, useRouter } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
 
 const formSchema = z.object({
-  stageName: z.string(),
+  userEmail: z.string().email(),
   password: z.string(),
 });
 
@@ -27,16 +29,33 @@ export function LoginForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      stageName: "",
+      userEmail: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const router = useRouter();
+
+  const { isLoading, error, signIn } = useAuth();
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const { userEmail, password } = values;
+    try {
+      await signIn(userEmail, password);
+      router.push("/dashboard");
+    } catch (error: any) {
+      console.log(error);
+      if (error.message === "User is not confirmed.") {
+        router.push(`/authpages/verify?email=${userEmail}`);
+      }
+    }
   };
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-screen flex justify-center items-center">
+      The page is Loading
+    </div>
+  ) : (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -49,7 +68,7 @@ export function LoginForm() {
             </Link>
           </div>
           <div className="w-full max-w-[400px] space-y-2">
-            <h1 className="font-semibold text-xl sm:text-2xl md:text-4xl lg:text-5xl">
+            <h1 className="font-bold text-xl sm:text-2xl md:text-4xl lg:text-5xl">
               Welcome Back
             </h1>
             <p className="text-gray-500">
@@ -60,14 +79,13 @@ export function LoginForm() {
         </div>
         <FormField
           control={form.control}
-          name="stageName"
+          name="userEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Stage Name</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. Drake" {...field} />
+                <Input placeholder="e.g. Drake@gmail.com" {...field} />
               </FormControl>
-              <FormDescription>This is your artist name.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -89,14 +107,15 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+        {error && <span className="text-red-500 text-sm">{error}</span>}
         <div>
-          <Link href={"#"}>
+          <Link href={"/authpages/forgot_password"}>
             <span className="text-indigo-600 text-sm hover:underline">
               Forgot Password?
             </span>
           </Link>
         </div>
-        <Button className="w-full" type="submit">
+        <Button className="w-full bg-blue-500 hover:bg-sky-500" type="submit">
           Log in
         </Button>
       </form>
