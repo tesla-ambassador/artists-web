@@ -7,6 +7,7 @@ import { z } from "zod";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import { redirect, useRouter } from "next/navigation";
+import { LoadingScreen } from "../loading-screen";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -99,7 +100,7 @@ export function SignupForm() {
 
       if (response) {
         router.push(
-          `/authpages/verify?username=${fullName}?phone=${userPhone}?email=${email}?password=${password}`,
+          `/authpages/verify?username=${fullName}?phone=${userPhone}?email=${email}?password=${password}`
         );
       }
     } catch (err: any) {
@@ -109,9 +110,9 @@ export function SignupForm() {
   };
 
   return isLoading ? (
-    <div className="w-full h-screen flex justify-center items-center">
-      The page is Loading
-    </div>
+    <>
+      <LoadingScreen />
+    </>
   ) : (
     <Form {...form}>
       <form

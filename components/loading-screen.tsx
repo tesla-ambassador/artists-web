@@ -43,7 +43,7 @@ export function LoadingScreen() {
   }, []);
 
   return (
-    <div className="bg-white w-screen h-screen flex items-center justify-center">
+    <div className="bg-white w-full h-screen flex items-center justify-center">
       <div className="flex flex-col items-center gap-8 w-full max-w-[300px]">
         <div ref={divRef} className="w-20">
           <img
