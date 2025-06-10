@@ -34,21 +34,10 @@ export function LoginForm() {
     },
   });
 
-  const router = useRouter();
-
   const { isLoading, error, signIn } = useAuth();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const { userEmail, password } = values;
-    try {
-      await signIn(userEmail, password);
-      router.push("/dashboard");
-    } catch (error: any) {
-      console.log(error);
-      if (error.message === "User is not confirmed.") {
-        router.push(`/authpages/verify?email=${userEmail}`);
-      }
-    }
+    console.log(values)
   };
 
   return isLoading ? (

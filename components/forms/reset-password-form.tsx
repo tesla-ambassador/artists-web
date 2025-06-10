@@ -72,7 +72,7 @@ export function ResetPasswordForm() {
     if (counter > 0) {
       timer = setInterval(
         () => setCounter((prevCounter: number) => prevCounter - 1),
-        1000,
+        1000
       );
     }
 

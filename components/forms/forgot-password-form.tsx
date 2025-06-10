@@ -44,7 +44,6 @@ export function ForgotPasswordForm() {
 
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     console.log(value);
-    await sendEmail(value.email);
   };
 
   return (

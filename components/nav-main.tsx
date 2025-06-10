@@ -2,6 +2,7 @@
 
 import { type LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 import {
   SidebarGroup,
@@ -35,19 +36,19 @@ export function NavMain({
                 : "bg-none w-full"
             }
           >
-            <SidebarMenuButton
-              tooltip={item.title}
-              className={
-                currentRoute === item.url
-                  ? "hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-500 hover:rounded-md hover:text-white w-full"
-                  : "bg-none w-full"
-              }
-            >
-              {item.icon && <item.icon />}
-              <a href={item.url}>
+            <Link href={item.url}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                className={
+                  currentRoute === item.url
+                    ? "hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-500 hover:rounded-md hover:text-white w-full"
+                    : "bg-none w-full"
+                }
+              >
+                {item.icon && <item.icon />}
                 <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
+              </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
         ))}
       </SidebarMenu>

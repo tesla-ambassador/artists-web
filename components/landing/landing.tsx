@@ -59,7 +59,7 @@ export function Landing() {
     <div className="relative mx-auto min-h-screen h-full min-w-screen w-full overflow-hidden flex flex-col items-center gap-60 sm:gap-50 lg:gap-80">
       <div className="relative z-20 w-full mx-auto flex flex-row-reverse items-center justify-between p-4 sm:px-[50px] lg:px-[100px]">
         <div className="w-[50px] sm:w-[70px]">
-          <Link href={"/"}>
+          <Link href={"/dashboard"}>
             <img src="/ziki-logo.svg" alt="Ziki Tunes Logo" />
           </Link>
         </div>

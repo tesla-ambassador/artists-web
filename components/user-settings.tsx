@@ -101,10 +101,10 @@ export function UserSettings() {
 
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="grid grid-cols-3 md:grid-cols-4 mb-8">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
+          <TabsTrigger value="profile" className="data-[state=active]:bg-gradient-to-r from-blue-500 to-cyan-500 data-[state=active]:text-white">Profile</TabsTrigger>
+          <TabsTrigger value="account" className="data-[state=active]:bg-gradient-to-r from-blue-500 to-cyan-500 data-[state=active]:text-white">Account</TabsTrigger>
+          <TabsTrigger value="notifications" className="data-[state=active]:bg-gradient-to-r from-blue-500 to-cyan-500 data-[state=active]:text-white">Notifications</TabsTrigger>
+          <TabsTrigger value="appearance" className="data-[state=active]:bg-gradient-to-r from-blue-500 to-cyan-500 data-[state=active]:text-white">Appearance</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
