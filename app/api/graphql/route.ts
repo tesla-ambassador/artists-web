@@ -15,4 +15,11 @@ const handler = startServerAndCreateNextHandler(server, {
   context: async (req: NextRequest) => await createContext(req),
 });
 
-export { handler as GET, handler as POST };
+// Wrap the handler to match Next.js App Router expectations
+export async function GET(request: NextRequest) {
+  return handler(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handler(request);
+}

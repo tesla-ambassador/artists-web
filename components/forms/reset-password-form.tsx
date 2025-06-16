@@ -50,7 +50,7 @@ export function ResetPasswordForm() {
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [setIsPasswordReset] = React.useState<{
+  const [isPasswordReset, setIsPasswordReset] = React.useState<{
     status: "error" | "success";
     message: string;
   }>();
