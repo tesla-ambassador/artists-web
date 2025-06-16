@@ -50,7 +50,7 @@ export function ResetPasswordForm() {
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [isPasswordReset, setIsPasswordReset] = React.useState<{
+  const [setIsPasswordReset] = React.useState<{
     status: "error" | "success";
     message: string;
   }>();
@@ -72,7 +72,7 @@ export function ResetPasswordForm() {
     if (counter > 0) {
       timer = setInterval(
         () => setCounter((prevCounter: number) => prevCounter - 1),
-        1000
+        1000,
       );
     }
 
