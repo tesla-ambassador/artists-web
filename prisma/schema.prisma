@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PRIMARY_ARTIST
+  PERFORMER
+  PRODUCER
+  REMIXER
+  COMPOSER
+  LYRICIST
+  PUBLISHER
+  FEATURING_WITH
+  CONDUCTOR
+  ARRANGER
+  ORCHESTRA
+  ACTOR
+  AGENT
+  PROMOTER
+  BENEFICIARY
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  name               String?
+  locale             String?
+  nickname           String?
+  bio                String?
+  email              String? @unique
+  password           String?
+  preferred_username String?
+  based_country      String?
+  based_region       String?
+  address            String?
+  website            String?
+  updated_at         DateTime?
+  picture            String?
+  followers          String?
+  monthly_plays      String?
+  downloads          String?
+  is_artist          Boolean?
+  country            String?
+  email_alerts       String?
+  instagram          String?
+  twitter            String?
+  youtube            String?
+  facebook           String?
+  role               Role[]
+  influencers        String[]
+  genre              String[]
+}
+
+model Release {
+  id                    String                @id @default(uuid())
+  title                 String
+  artworkUrl            String?
+  songs                 Song[]
+  artistRoles           ArtistRole[]
+  legalOwners           LegalOwner[]
+  distributionPlatforms DistributionPlatform[]
+  createdAt             DateTime              @default(now())
+}
+
+model Song {
+  id        String   @id @default(uuid())
+  title     String
+  fileUrl   String
+  releaseId String?
+  release   Release? @relation(fields: [releaseId], references: [id])
+}
+
+model ArtistRole {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  ownership Int
+  release   Release  @relation(fields: [releaseId], references: [id])
+  releaseId String
+}
+
+model LegalOwner {
+  id        String   @id @default(uuid())
+  name      String
+  year      Int
+  type      String
+  release   Release  @relation(fields: [releaseId], references: [id])
+  releaseId String
+}
+
+model DistributionPlatform {
+  id        String   @id @default(uuid())
+  platform  String
+  release   Release  @relation(fields: [releaseId], references: [id])
+  releaseId String
+}

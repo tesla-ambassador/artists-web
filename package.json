@@ -1,0 +1,46 @@
+{
+  "name": "artist-archive",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.842.0",
+    "@aws-sdk/s3-request-presigner": "^3.842.0",
+    "@prisma/client": "^6.11.1",
+    "@supabase/supabase-js": "^2.50.3",
+    "apollo-server-express": "^3.13.0",
+    "artist-archive": "file:",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.10.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.1",
+    "express-async-handler": "^1.2.0",
+    "graphql": "^16.11.0",
+    "graphql-upload": "^17.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "quokka-treasure-chest": "^1.0.3",
+    "sequelize": "^6.37.5",
+    "uuid": "^11.1.0",
+    "validator": "^13.15.15"
+  },
+  "sequelize": {
+    "config": "config/config.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "prisma": "^6.11.1"
+  }
+}
