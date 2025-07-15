@@ -6,8 +6,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
-import { useParams } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import { gql } from "@apollo/client";
 import { v4 as uuidv4 } from "uuid";
