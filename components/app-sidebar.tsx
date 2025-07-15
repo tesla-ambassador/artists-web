@@ -12,6 +12,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  Rocket,
 } from "lucide-react";
 
 import ZikiLogo from "./ziki-logo";
@@ -72,6 +73,25 @@ const data = {
       title: "Archive",
       url: "/dashboard/archive",
       icon: Bot,
+      items: [
+        {
+          title: "Genesis",
+          url: "#",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Releases",
+      url: "/dashboard/release",
+      icon: Rocket,
       items: [
         {
           title: "Genesis",

@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-import useAuth from "@/hooks/useAuth";
 import { redirect, useRouter } from "next/navigation";
 import { LoadingScreen } from "../loading-screen";
 
@@ -30,10 +29,7 @@ import {
   SelectContent,
 } from "../ui/select";
 
-import {
-  countryPhoneCodes,
-  extractPhoneCode,
-} from "@/utils/country/country-code-data";
+import { countryPhoneCodes, extractPhoneCode } from "@/data/country-code-data";
 
 const formSchema = z
   .object({
@@ -68,8 +64,6 @@ export function SignupForm() {
     },
   });
   const watchTerms = form.watch("agreeToTerms");
-  const { isLoading, error, signUp } = useAuth();
-  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const {
@@ -95,25 +89,10 @@ export function SignupForm() {
       },
       tnc: agreeToTerms,
     };
-    try {
-      const response = await signUp(formData);
-
-      if (response) {
-        router.push(
-          `/authpages/verify?username=${fullName}?phone=${userPhone}?email=${email}?password=${password}`
-        );
-      }
-    } catch (err: any) {
-      console.log(err);
-    }
-    console.log(values);
+    console.log(formData);
   };
 
-  return isLoading ? (
-    <>
-      <LoadingScreen />
-    </>
-  ) : (
+  return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -255,7 +234,6 @@ export function SignupForm() {
             )}
           />
         </div>
-        {error && <span className="text-red-500 text-sm">{error}</span>}
         <FormField
           control={form.control}
           name="agreeToTerms"

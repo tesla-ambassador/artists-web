@@ -5,8 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import useOTPVerification from "@/hooks/useOTPVerification";
-import useAuth from "@/hooks/useAuth";
 
 const formSchema = z.object({
   OTP: z.string().min(6, {
@@ -42,11 +40,6 @@ export function VerificationForm() {
   const [status, setStatus] = React.useState(initialStatus);
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const { sendOTPStatus, sendOTP, verifyOTP, verifyOTPStatus } =
-    useOTPVerification();
-
-  const { isLoading, error, signIn } = useAuth();
   const [counter, setCounter] = React.useState(59); // 60 Seconds Counter
   const [shouldLogin, setShouldLogin] = React.useState(true); // 60 Seconds Counter
   const email = searchParams.get("email");
@@ -66,20 +59,9 @@ export function VerificationForm() {
     }
   }, [searchParams]);
 
-  React.useEffect(() => {
-    if (sendOTPStatus.error || verifyOTPStatus.error || error) {
-      setStatus({
-        success: false,
-        error: true,
-        message: sendOTPStatus?.error || verifyOTPStatus?.error || error,
-      });
-    }
-  }, [sendOTPStatus.error, verifyOTPStatus.error, error]);
-
   const login = async () => {
     if (email !== null && password !== null) {
       try {
-        await signIn(email, password);
         router.push("/");
       } catch (err: any) {
         console.log(err);
@@ -94,30 +76,22 @@ export function VerificationForm() {
     }
   };
 
-  React.useEffect(() => {
-    if (verifyOTPStatus.isSuccess) {
-      if (shouldLogin) {
-        login();
-        setStatus(initialStatus);
-      } else {
-        setStatus({
-          error: false,
-          success: true,
-          message: "Account verified successfully! Redirecting you to login.",
-        });
-        setTimeout(() => {
-          router.push("/authpages/login");
-        }, 3000);
-      }
-    }
-
-    sendOTPStatus.isSuccess &&
-      setStatus({
-        error: false,
-        success: true,
-        message: "OTP has been sent successfully!",
-      });
-  }, [verifyOTPStatus.isSuccess, sendOTPStatus.isSuccess]);
+  // React.useEffect(() => {
+  //   if (verifyOTPStatus.isSuccess) {
+  //     if (shouldLogin) {
+  //       login();
+  //       setStatus(initialStatus);
+  //     } else {
+  //       setStatus({
+  //         error: false,
+  //         success: true,
+  //         message: "Account verified successfully! Redirecting you to login.",
+  //       });
+  //       setTimeout(() => {
+  //         router.push("/authpages/login");
+  //       }, 3000);
+  //     }
+  //   }
 
   React.useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -125,7 +99,7 @@ export function VerificationForm() {
     if (counter > 0) {
       timer = setInterval(
         () => setCounter((prevCounter: number) => prevCounter - 1),
-        1000,
+        1000
       );
     }
 
@@ -134,26 +108,8 @@ export function VerificationForm() {
     };
   }, [counter]);
 
-  const resendOTP = async () => {
-    if (email !== null) {
-      await sendOTP(email);
-      setCounter(59);
-    } else {
-      console.log("The email isn't defined.");
-    }
-  };
-
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     console.log(value);
-    if (userName !== null && email !== null) {
-      if (shouldLogin) {
-        await verifyOTP(userName, value.OTP);
-      } else {
-        await verifyOTP(email, value.OTP);
-      }
-    } else {
-      console.log("Your email and username haven't been recieved.");
-    }
   };
   return (
     <Form {...form}>
@@ -195,9 +151,7 @@ export function VerificationForm() {
           )}
         />
         <Button className="w-full bg-blue-500 hover:bg-sky-500" type="submit">
-          {sendOTPStatus.isLoading || verifyOTPStatus.isLoading || isLoading
-            ? "Loading..."
-            : "Submit"}
+          Submit
         </Button>
         {counter !== 0 ? (
           <p className="text-sm text-center mt-2">
@@ -207,7 +161,6 @@ export function VerificationForm() {
         ) : (
           <Button
             className="w-full text-blue-500 hover:text-sky-500"
-            onClick={resendOTP}
             type="button"
             variant={"link"}
           >

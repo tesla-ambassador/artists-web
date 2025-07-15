@@ -3,7 +3,6 @@ import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import usePasswordReset from "@/hooks/usePasswordReset";
 import { useRouter } from "next/navigation";
 
 import {
@@ -25,7 +24,6 @@ const formSchema = z.object({
 
 export function ForgotPasswordForm() {
   const router = useRouter();
-  const { isLoading, isSuccess, error, sendEmail } = usePasswordReset();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,12 +33,6 @@ export function ForgotPasswordForm() {
   });
 
   const userEmail = form.watch("email");
-
-  React.useEffect(() => {
-    if (isSuccess) {
-      router.push(`/authpages/reset_password?useremail=${userEmail}`);
-    }
-  }, [isSuccess]);
 
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     console.log(value);

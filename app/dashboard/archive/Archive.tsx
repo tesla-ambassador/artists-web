@@ -42,17 +42,17 @@ export function Archive() {
             Songs
           </TabsTrigger>
           <TabsTrigger
-            value="Releases"
+            value="Albums"
             className="data-[state=active]:bg-gradient-to-r from-blue-500 to-cyan-500 data-[state=active]:text-white"
           >
-            Releases
+            Albums
           </TabsTrigger>
-          {/* <TabsTrigger
+          <TabsTrigger
             value="Videos"
             className="data-[state=active]:bg-gradient-to-r from-blue-500 to-cyan-500 data-[state=active]:text-white"
           >
             Videos
-          </TabsTrigger> */}
+          </TabsTrigger>
         </TabsList>
 
         <div>
@@ -67,9 +67,9 @@ export function Archive() {
             children={<DataTableDemo />}
           />
         </TabsContent>
-        <TabsContent value="Releases">
+        <TabsContent value="Albums">
           <ArchiveTabContent
-            title="Releases"
+            title="Albums"
             desc="An archive of your Releases"
             children={<DataTableDemo />}
           />

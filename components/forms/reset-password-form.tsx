@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Auth } from "aws-amplify";
 
 import {
   Form,
@@ -72,7 +71,7 @@ export function ResetPasswordForm() {
     if (counter > 0) {
       timer = setInterval(
         () => setCounter((prevCounter: number) => prevCounter - 1),
-        1000,
+        1000
       );
     }
 
@@ -83,22 +82,7 @@ export function ResetPasswordForm() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { OTP, password } = values;
-    if (email !== null) {
-      try {
-        const res = await Auth.forgotPasswordSubmit(email, OTP, password);
-        if (res) {
-          setIsPasswordReset({
-            status: "success",
-            message:
-              "Password has been reset successfully! You can now login with your new password.",
-          });
-        }
-      } catch (error: any) {
-        setIsPasswordReset({ status: "error", message: error.message });
-      }
-    } else {
-      console.log("Email is null");
-    }
+    console.log(`OTP is :${OTP}\nPassword is: ${password}`);
   };
 
   return (

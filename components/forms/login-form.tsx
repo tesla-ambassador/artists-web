@@ -18,7 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
-import useAuth from "@/hooks/useAuth";
 
 const formSchema = z.object({
   userEmail: z.string().email(),
@@ -34,17 +33,11 @@ export function LoginForm() {
     },
   });
 
-  const { isLoading, error, signIn } = useAuth();
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values)
+    console.log(values);
   };
 
-  return isLoading ? (
-    <div className="w-full h-screen flex justify-center items-center">
-      The page is Loading
-    </div>
-  ) : (
+  return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -96,7 +89,6 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        {error && <span className="text-red-500 text-sm">{error}</span>}
         <div>
           <Link href={"/authpages/forgot_password"}>
             <span className="text-indigo-600 text-sm hover:underline">

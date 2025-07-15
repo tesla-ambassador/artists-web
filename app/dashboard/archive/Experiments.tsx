@@ -13,7 +13,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  MoreHorizontal,
+  LucideIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -82,6 +87,15 @@ export type Release = {
   name: string;
   dateAdded: string;
   albumArt: string;
+};
+
+export type Releases = {
+  id: string;
+  type: string;
+  releaseArt: string;
+  name: string;
+  icon: LucideIcon;
+  color: string;
 };
 
 export const columns: ColumnDef<Release>[] = [
@@ -198,7 +212,7 @@ export function DataTableDemo() {
     },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
+    []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -273,7 +287,7 @@ export function DataTableDemo() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -292,7 +306,7 @@ export function DataTableDemo() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
