@@ -33,9 +33,6 @@ const registerUser = asyncHandler(async (req, res) => {
     address,
     website,
     picture,
-    followers,
-    monthly_plays,
-    downloads,
     is_artist,
     country,
     email_alerts,
@@ -53,13 +50,11 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("Name, Email, and Password are required.");
   }
 
-  // Validate email format
   if (!validator.isEmail(email)) {
     res.status(400);
     throw new Error(`Email address "${email}" is invalid.`);
   }
 
-  // Validate password complexity before signing up
   if (!validatePassword(password)) {
     res.status(400);
     throw new Error(
@@ -67,14 +62,12 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  // Check if user already exists in Prisma
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     res.status(400);
     throw new Error("User already exists.");
   }
 
-  // Register with Supabase
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -88,9 +81,12 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error(error.message);
   }
 
-  // Store extended user profile in your local Prisma DB
+  const supabaseUserId = data.user.id;
+
+  // Create user in Prisma with the Supabase user ID and other data
   const user = await prisma.user.create({
     data: {
+      supabaseUserId,
       name,
       email,
       nickname,
@@ -103,9 +99,6 @@ const registerUser = asyncHandler(async (req, res) => {
       website,
       updated_at: new Date(),
       picture,
-      followers,
-      monthly_plays,
-      downloads,
       is_artist,
       country,
       email_alerts,
@@ -125,7 +118,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 });
 
-// LOGIN A USER
+// LOGIN A USER (with Prisma sync if user missing)
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -134,6 +127,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("Email and password are required.");
   }
 
+  // Authenticate via Supabase
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -144,11 +138,23 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials.");
   }
 
-  // Get user data from your Prisma DB
-  const user = await prisma.user.findUnique({ where: { email } });
+  const supabaseUserId = data.user.id;
+
+  // Try to find user by supabaseUserId in Prisma DB
+  let user = await prisma.user.findUnique({
+    where: { supabaseUserId },
+  });
+
   if (!user) {
-    res.status(404);
-    throw new Error("User found in Supabase but not in local database.");
+    // User exists in Supabase but not in Prisma, create user in Prisma
+    user = await prisma.user.create({
+      data: {
+        supabaseUserId,
+        email: data.user.email,
+        name: data.user.user_metadata?.name || null,
+        // optionally add more fields here from user_metadata or defaults
+      },
+    });
   }
 
   res.status(200).json({
@@ -172,8 +178,68 @@ const currentUser = asyncHandler(async (req, res) => {
   res.status(200).json(user);
 });
 
+// FORGOT PASSWORD
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    res.status(400);
+    throw new Error("Email is required.");
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: process.env.FRONTEND_RESET_PASSWORD_URL,
+  });
+
+  if (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+
+  res.status(200).json({
+    message: "Password reset email sent. Please check your inbox.",
+  });
+});
+
+// DELETE CURRENT USER ACCOUNT
+const deleteAccount = asyncHandler(async (req, res) => {
+  const userId = req.user?.id;
+
+  if (!userId) {
+    res.status(401);
+    throw new Error("Unauthorized. User ID not found.");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found.");
+  }
+
+  // Delete from Supabase Auth using supabaseUserId stored in Prisma
+  const supabaseUserId = user.supabaseUserId;
+  const { error: supaError } = await supabase.auth.admin.deleteUser(supabaseUserId);
+
+  if (supaError) {
+    res.status(500);
+    throw new Error(`Failed to delete user from Supabase: ${supaError.message}`);
+  }
+
+  // Delete from Prisma
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+
+  res.status(200).json({ message: "User account deleted successfully." });
+});
+
 module.exports = {
   registerUser,
   loginUser,
   currentUser,
+  forgotPassword,
+  deleteAccount,
 };

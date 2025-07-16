@@ -15,6 +15,7 @@ app.use(express.json());
 
 // REST routes
 app.use("/api/Users", require("./routes/userRoutes"));
+app.use("/api/uploads", require("./routes/uploadRoutes"));
 
 // Error handler
 app.use(errorHandler);

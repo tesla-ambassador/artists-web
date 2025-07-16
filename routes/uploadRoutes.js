@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { generateSignedUploadUrl } = require('./lib/uploadFile.js');
+const { generateSignedUploadUrl } = require('../lib/uploadFile');
 
 // POST /api/upload/signed-url
 // Generates a signed URL for file uploads to Supabase Storage
@@ -17,14 +17,13 @@ router.post('/signed-url', async (req, res) => {
 
   try {
     // Call the function to generate the signed URL
-    const { uploadUrl, uploadToken, filePath } = await generateSignedUploadUrl(type, fileName);
+    const { signedUrl, filePath } = await generateSignedUploadUrl(type, fileName);
 
-    // Send the generated URL, token, and file path back to the client
+    // Send the generated URL and file path back to the client
     res.status(200).json({
       message: 'Signed upload URL generated successfully.',
-      uploadUrl,     // The direct URL for PUT request
-      uploadToken,   // The token for supabase.storage.uploadToSignedUrl
-      filePath,      // The path where the file will be stored in Supabase
+      signedUrl,    // The direct URL for PUT request
+      filePath,     // The path where the file will be stored in Supabase
     });
   } catch (error) {
     console.error('Error generating signed upload URL:', error.message);
