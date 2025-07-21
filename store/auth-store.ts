@@ -1,17 +1,33 @@
-import { createStore } from "zustand";
-import { User } from "@/types/authDataTypes";
+import { create } from "zustand";
+import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
 
-export type AuthState = {
-  user: User;
-  isLoggedIn: boolean;
-  firstSignIn: boolean;
-};
+interface AuthStore {
+  activeUser: User | null;
+  loading: boolean;
+  fetchUser: () => Promise<void>;
+}
 
-export type AuthActions = {
-  signupUser: (newUser: User) => void;
-  deleteUser: (userId: string) => void;
-  loginUser: (currentUser: User) => void;
-  logoutUser: (userId: string) => void;
-};
+export const useAuthStore = create<AuthStore>((set) => ({
+  activeUser: null,
+  loading: false,
 
-export type AuthStoreState = AuthState & AuthActions;
+  fetchUser: async () => {
+    set({ loading: true });
+
+    try {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        console.error("Auth error:", error.message);
+        set({ activeUser: null, loading: false });
+        return;
+      }
+
+      set({ activeUser: data.user, loading: false });
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      set({ activeUser: null, loading: false });
+    }
+  },
+}));

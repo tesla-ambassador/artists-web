@@ -4,6 +4,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 import {
   Form,
@@ -34,8 +36,29 @@ export function ForgotPasswordForm() {
 
   const userEmail = form.watch("email");
 
+  const handlePasswordReset = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) {
+      toast.error("Password Reset Failed", {
+        description: `Error resetting password: ${error.message}`,
+      });
+    } else {
+      toast.success("Password Reset Successful", {
+        description:
+          "You will recieve an email with an OTP to reset your password",
+      });
+    }
+  };
+
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
-    console.log(value);
+    try {
+      await handlePasswordReset(value.email);
+      router.push(`reset_password?email=${value.email}`);
+    } catch (error) {
+      toast.error("Form Submission Unsuccessful", {
+        description: `Error submitting form: ${error}`,
+      });
+    }
   };
 
   return (

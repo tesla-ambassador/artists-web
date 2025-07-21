@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { LoadingScreen } from "../loading-screen";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +31,9 @@ import {
 } from "../ui/select";
 
 import { countryPhoneCodes, extractPhoneCode } from "@/data/country-code-data";
+import { signup } from "@/app/authpages/actions";
 
+// Enhanced validation schema with password complexity
 const formSchema = z
   .object({
     fullName: z.string().min(2, {
@@ -39,7 +42,16 @@ const formSchema = z
     stageName: z.string(),
     email: z.string().email(),
     phone: z.string().nonempty({ message: "Please provide a phone number" }),
-    password: z.string().nonempty({ message: "Provide a password" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" })
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        {
+          message:
+            "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
+        }
+      ),
     confirmPassword: z.string(),
     country: z.string().nonempty({ message: "Please select a country" }),
     agreeToTerms: z.boolean(),
@@ -49,7 +61,13 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
+export type SignUpSchema = z.infer<typeof formSchema>;
+
 export function SignupForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,31 +84,22 @@ export function SignupForm() {
   const watchTerms = form.watch("agreeToTerms");
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const {
-      fullName,
-      stageName,
-      email,
-      phone,
-      password,
-      confirmPassword,
-      country,
-      agreeToTerms,
-    } = values;
-    const userPhone = `${extractPhoneCode(country)}${phone}`;
-    const formData = {
-      username: fullName,
-      phone: userPhone,
-      email: email,
-      password: password,
-      name: stageName,
-      country_code: {
-        label: country,
-        value: country,
-      },
-      tnc: agreeToTerms,
-    };
-    console.log(formData);
+    setIsLoading(true);
+    try {
+      await signup(values);
+      router.push(`verify?email=${values.email}`);
+    } catch (error) {
+      setIsLoading(false);
+      toast.error("Sorry couldn't sign you up.", {
+        description: `Error: ${error}`,
+      });
+    }
   };
+
+  // Show loading screen while processing
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Form {...form}>
@@ -112,6 +121,14 @@ export function SignupForm() {
             </p>
           </div>
         </div>
+
+        {/* Show error message if any */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+            {error}
+          </div>
+        )}
+
         <FormField
           control={form.control}
           name="fullName"
@@ -181,6 +198,7 @@ export function SignupForm() {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -212,6 +230,10 @@ export function SignupForm() {
                     {...field}
                   />
                 </FormControl>
+                <FormDescription className="text-xs">
+                  Must contain uppercase, lowercase, number, and special
+                  character
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -259,8 +281,12 @@ export function SignupForm() {
             </FormItem>
           )}
         />
-        <Button disabled={!watchTerms} className="w-full" type="submit">
-          Sign Up
+        <Button
+          disabled={!watchTerms || isLoading}
+          className="w-full"
+          type="submit"
+        >
+          {isLoading ? "Creating Account..." : "Sign Up"}
         </Button>
       </form>
     </Form>

@@ -39,3 +39,23 @@ export function formatReleaseDate(date: Date, lang: string = "en"): string {
 
   return rltf.format(diffInSeconds, "second");
 }
+
+export function getFirstTwoInitials(name: string): string {
+  if (!name || typeof name !== "string") {
+    return "";
+  }
+
+  // Split by spaces and filter out empty strings
+  const nameParts = name
+    .trim()
+    .split(/\s+/)
+    .filter((part) => part.length > 0);
+
+  // Get first two parts and extract their first characters
+  const initials = nameParts
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+
+  return initials;
+}

@@ -5,6 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { verifyOTP } from "@/app/authpages/actions";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   OTP: z.string().min(6, {
@@ -41,7 +44,6 @@ export function VerificationForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [counter, setCounter] = React.useState(59); // 60 Seconds Counter
-  const [shouldLogin, setShouldLogin] = React.useState(true); // 60 Seconds Counter
   const email = searchParams.get("email");
   const password = searchParams.get("password");
   const userName = searchParams.get("username");
@@ -52,46 +54,6 @@ export function VerificationForm() {
       OTP: "",
     },
   });
-
-  React.useEffect(() => {
-    if (password === null || userName === null) {
-      setShouldLogin(false);
-    }
-  }, [searchParams]);
-
-  const login = async () => {
-    if (email !== null && password !== null) {
-      try {
-        router.push("/");
-      } catch (err: any) {
-        console.log(err);
-        setStatus({
-          error: true,
-          success: false,
-          message: err.message as string,
-        });
-      }
-    } else {
-      console.log("Email and Password aren't defined.");
-    }
-  };
-
-  // React.useEffect(() => {
-  //   if (verifyOTPStatus.isSuccess) {
-  //     if (shouldLogin) {
-  //       login();
-  //       setStatus(initialStatus);
-  //     } else {
-  //       setStatus({
-  //         error: false,
-  //         success: true,
-  //         message: "Account verified successfully! Redirecting you to login.",
-  //       });
-  //       setTimeout(() => {
-  //         router.push("/authpages/login");
-  //       }, 3000);
-  //     }
-  //   }
 
   React.useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -108,8 +70,31 @@ export function VerificationForm() {
     };
   }, [counter]);
 
+  const handleResend = async () => {
+    if (email === null) return;
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: email,
+      });
+
+      if (error) {
+        console.error(`Resend failed: ${error.message}`);
+      } else {
+        console.log("New OTP sent to your email!");
+      }
+    } catch (err) {
+      console.error("Failed to resend OTP");
+    }
+  };
+
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
-    console.log(value);
+    if (email === null) return;
+    await verifyOTP(email, value.OTP);
+    toast.success("You have been verified", {
+      description: "You can now login to Ziki and have access to all features",
+    });
+    router.push("/dashboard");
   };
   return (
     <Form {...form}>
@@ -163,6 +148,7 @@ export function VerificationForm() {
             className="w-full text-blue-500 hover:text-sky-500"
             type="button"
             variant={"link"}
+            onClick={handleResend}
           >
             Resend OTP
           </Button>

@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 import {
   Form,
@@ -80,9 +82,66 @@ export function ResetPasswordForm() {
     };
   }, [counter]);
 
+  const handleResend = async () => {
+    if (email === null) return;
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: email,
+      });
+
+      if (error) {
+        toast.error("Failed to Resend OTP", {
+          description: `OTP Resend Error: ${error.message}`,
+        });
+      } else {
+        toast.success("OTP sent to email", {
+          description: "Open your email to receive OTP.",
+        });
+      }
+    } catch (err) {
+      toast.error("OTP Request failed", {
+        description: `OTP Request Submission Error: ${err}`,
+      });
+    }
+  };
+
+  const handleResetPassword = async (otp: string, newPassword: string) => {
+    // Verify OTP
+    if (email === null) return;
+    const { error: verifyError } = await supabase.auth.verifyOtp({
+      email: email,
+      token: otp,
+      type: "email",
+    });
+
+    if (verifyError) {
+      toast.error("Unable To Verify OTP", {
+        description: `OTP Verification Error: ${verifyError.message}`,
+      });
+      return;
+    }
+
+    // Update the password
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (updateError) {
+      toast.error("Unable to update password", {
+        description: `Error updating password: ${updateError.message}`,
+      });
+    } else {
+      toast.success("Password Updated Successfully", {
+        description: "Your password has successfully been updated",
+      });
+      router.push("login");
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { OTP, password } = values;
-    console.log(`OTP is :${OTP}\nPassword is: ${password}`);
+    await handleResetPassword(OTP, password);
   };
 
   return (
@@ -161,6 +220,21 @@ export function ResetPasswordForm() {
         <Button className="w-full bg-blue-500 hover:bg-sky-500" type="submit">
           Submit
         </Button>
+        {counter !== 0 ? (
+          <p className="text-sm text-center mt-2">
+            Resend OTP in{" "}
+            <span className="font-semibold text-blue-500">00:{counter}</span>
+          </p>
+        ) : (
+          <Button
+            className="w-full text-blue-500 hover:text-sky-500"
+            type="button"
+            variant={"link"}
+            onClick={handleResend}
+          >
+            Resend OTP
+          </Button>
+        )}
       </form>
     </Form>
   );

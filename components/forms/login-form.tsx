@@ -4,6 +4,8 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,11 +20,14 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
+import { login } from "@/app/authpages/actions";
 
 const formSchema = z.object({
   userEmail: z.string().email(),
   password: z.string(),
 });
+
+export type LoginSchema = z.infer<typeof formSchema>;
 
 export function LoginForm() {
   const form = useForm({
@@ -33,8 +38,17 @@ export function LoginForm() {
     },
   });
 
+  const router = useRouter();
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      await login(values);
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error("Login Submission Failed", {
+        description: `Login Submission Error: ${error}`,
+      });
+    }
   };
 
   return (
